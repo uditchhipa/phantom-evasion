@@ -7,4 +7,5 @@ output/*.bin
 output/*.c
 output/detection_report_*.md
 root/
+templates/go.sum
 
