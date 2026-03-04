@@ -1,0 +1,22 @@
+phantom_evasion:
+  default_encryption: aes
+  default_edr_bypass: full
+  default_loader: c
+  default_format: exe
+  max_iterations: 10
+
+  compiler:
+    c: x86_64-w64-mingw32-gcc
+    rust: rustc
+    go: go
+
+  output_dir: output/
+
+  technique_catalog:
+    encryption: [xor, aes, rc4, chacha20]
+    obfuscation: [string_obfuscate, junk_code, polymorphic, control_flow_flatten]
+    edr_bypass: [direct_syscalls, indirect_syscalls, unhook_ntdll, api_hashing, hells_gate]
+    etw_bypass: [patch_etw, patch_amsi]
+    injection: [classic, apc, early_bird, callback]
+    sandbox_evasion: [sleep_encrypt, env_checks, parent_spoof, delayed_exec]
+    xdr_evasion: [process_masquerade, network_evasion, log_tampering]
