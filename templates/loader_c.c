@@ -9,7 +9,84 @@
  */
 
 #include <windows.h>
-#include <winternl.h>
+
+/* winternl.h is not available on all MinGW installations.
+ * Define the subset of types we need inline. */
+#ifndef _WINTERNL_H_
+#define _WINTERNL_H_
+
+typedef struct _UNICODE_STRING {
+    USHORT Length;
+    USHORT MaximumLength;
+    PWSTR  Buffer;
+} UNICODE_STRING, *PUNICODE_STRING;
+
+typedef struct _PEB_LDR_DATA {
+    BYTE       Reserved1[8];
+    PVOID      Reserved2[3];
+    LIST_ENTRY InMemoryOrderModuleList;
+} PEB_LDR_DATA, *PPEB_LDR_DATA;
+
+typedef struct _RTL_USER_PROCESS_PARAMETERS {
+    BYTE           Reserved1[16];
+    PVOID          Reserved2[10];
+    UNICODE_STRING ImagePathName;
+    UNICODE_STRING CommandLine;
+} RTL_USER_PROCESS_PARAMETERS, *PRTL_USER_PROCESS_PARAMETERS;
+
+typedef struct _PEB {
+    BYTE                          Reserved1[2];
+    BYTE                          BeingDebugged;
+    BYTE                          Reserved2[1];
+    PVOID                         Reserved3[2];
+    PPEB_LDR_DATA                 Ldr;
+    PRTL_USER_PROCESS_PARAMETERS  ProcessParameters;
+    PVOID                         Reserved4[3];
+    PVOID                         AtlThunkSListPtr;
+    PVOID                         Reserved5;
+    ULONG                         Reserved6;
+    PVOID                         Reserved7;
+    ULONG                         Reserved8;
+} PEB, *PPEB;
+
+typedef struct _LDR_DATA_TABLE_ENTRY {
+    LIST_ENTRY InMemoryOrderLinks;
+    PVOID      Reserved2[2];
+    PVOID      DllBase;
+    PVOID      Reserved3[2];
+    UNICODE_STRING FullDllName;
+    BYTE       Reserved4[8];
+    PVOID      Reserved5[3];
+    union {
+        ULONG CheckSum;
+        PVOID Reserved6;
+    };
+    ULONG TimeDateStamp;
+} LDR_DATA_TABLE_ENTRY, *PLDR_DATA_TABLE_ENTRY;
+
+typedef struct _OBJECT_ATTRIBUTES {
+    ULONG           Length;
+    HANDLE          RootDirectory;
+    PUNICODE_STRING ObjectName;
+    ULONG           Attributes;
+    PVOID           SecurityDescriptor;
+    PVOID           SecurityQualityOfService;
+} OBJECT_ATTRIBUTES, *POBJECT_ATTRIBUTES;
+
+typedef struct _CLIENT_ID {
+    HANDLE UniqueProcess;
+    HANDLE UniqueThread;
+} CLIENT_ID, *PCLIENT_ID;
+
+typedef LONG NTSTATUS;
+#define NT_SUCCESS(Status) (((NTSTATUS)(Status)) >= 0)
+
+#ifndef ProcessDebugPort
+#define ProcessDebugPort 7
+#endif
+
+#endif /* _WINTERNL_H_ */
+
 #include <bcrypt.h>
 #include <stdio.h>
 #include <stdlib.h>

