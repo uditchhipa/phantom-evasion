@@ -28,6 +28,9 @@ def generate_classic_injection() -> Dict[str, Any]:
 // Layer 4 – Behavioral Evasion
 // VirtualAllocEx + WriteProcessMemory + CreateRemoteThread injection.
 
+#ifndef PHANTOM_CLASSIC_INJECTION_INCLUDED
+#define PHANTOM_CLASSIC_INJECTION_INCLUDED
+
 #include <windows.h>
 #include <stdio.h>
 
@@ -78,6 +81,8 @@ static BOOL classic_inject(DWORD pid,
     CloseHandle(hProcess);
     return TRUE;
 }
+
+#endif /* PHANTOM_CLASSIC_INJECTION_INCLUDED */
 """
 
     return {

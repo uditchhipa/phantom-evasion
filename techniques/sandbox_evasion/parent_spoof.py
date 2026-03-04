@@ -25,6 +25,9 @@ def generate_parent_spoof() -> Dict[str, Any]:
 // Layer 4 – Behavioral Evasion
 // Creates a child process whose recorded parent PID is the chosen spoof target.
 
+#ifndef PHANTOM_PARENT_SPOOF_INCLUDED
+#define PHANTOM_PARENT_SPOOF_INCLUDED
+
 #include <windows.h>
 #include <tlhelp32.h>
 
@@ -107,6 +110,8 @@ static BOOL spawn_with_spoofed_parent(const char *spoof_parent_name,
     }
     return ok;
 }
+
+#endif /* PHANTOM_PARENT_SPOOF_INCLUDED */
 """
 
     return {

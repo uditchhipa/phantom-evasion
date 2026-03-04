@@ -33,8 +33,10 @@ def generate_hells_gate() -> Dict[str, Any]:
 // Reads syscall service numbers directly from ntdll.dll in memory,
 // with Halo's Gate fallback for hooked stubs.
 
+#ifndef PHANTOM_HELLS_GATE_INCLUDED
+#define PHANTOM_HELLS_GATE_INCLUDED
+
 #include <windows.h>
-#include <winternl.h>
 
 #define NT_SYSCALL_PROLOGUE_1  0x4C  // mov r10, rcx
 #define NT_SYSCALL_PROLOGUE_2  0x8B
@@ -118,6 +120,8 @@ static DWORD hells_gate_resolve(const char *nt_func_name) {
  * Example:
  *   DWORD ssn = hells_gate_resolve("NtAllocateVirtualMemory");
  */
+
+#endif /* PHANTOM_HELLS_GATE_INCLUDED */
 """
 
     return {

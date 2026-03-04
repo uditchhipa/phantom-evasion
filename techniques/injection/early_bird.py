@@ -32,6 +32,9 @@ def generate_early_bird_injection() -> Dict[str, Any]:
 // Creates a process suspended, queues shellcode APC, then resumes.
 // Shellcode executes before the process main thread runs any user code.
 
+#ifndef PHANTOM_EARLY_BIRD_INCLUDED
+#define PHANTOM_EARLY_BIRD_INCLUDED
+
 #include <windows.h>
 
 static BOOL early_bird_inject(const wchar_t *target_exe,
@@ -86,6 +89,8 @@ static BOOL early_bird_inject(const wchar_t *target_exe,
     CloseHandle(pi.hProcess);
     return TRUE;
 }
+
+#endif /* PHANTOM_EARLY_BIRD_INCLUDED */
 """
 
     return {

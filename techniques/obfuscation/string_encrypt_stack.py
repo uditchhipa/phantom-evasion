@@ -90,6 +90,9 @@ def generate_string_encrypt_stack() -> Dict[str, Any]:
 // Builds sensitive strings one character at a time at runtime so they never
 // appear as contiguous sequences in the binary image.
 
+#ifndef PHANTOM_STRING_ENCRYPT_STACK_INCLUDED
+#define PHANTOM_STRING_ENCRYPT_STACK_INCLUDED
+
 #include <stddef.h>
 
 // Usage: declare a char array of the correct length, then call the builder.
@@ -108,6 +111,7 @@ def generate_string_encrypt_stack() -> Dict[str, Any]:
         parts.append(_stack_string_fn(var_name, s))
         parts.append("")  # blank line between functions
 
+    parts.append("#endif /* PHANTOM_STRING_ENCRYPT_STACK_INCLUDED */\n")
     code = "\n".join(parts)
 
     return {

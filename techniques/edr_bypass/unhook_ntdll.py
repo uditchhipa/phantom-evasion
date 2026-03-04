@@ -28,6 +28,9 @@ def generate_unhook_ntdll() -> Dict[str, Any]:
 // Restores the .text section of the in-memory ntdll.dll from a clean on-disk copy,
 // removing any inline hooks placed by EDR products.
 
+#ifndef PHANTOM_UNHOOK_NTDLL_INCLUDED
+#define PHANTOM_UNHOOK_NTDLL_INCLUDED
+
 #include <windows.h>
 
 static BOOL unhook_ntdll(void) {
@@ -84,6 +87,8 @@ static BOOL unhook_ntdll(void) {
     UnmapViewOfFile(pClean);
     return TRUE;
 }
+
+#endif /* PHANTOM_UNHOOK_NTDLL_INCLUDED */
 """
 
     return {

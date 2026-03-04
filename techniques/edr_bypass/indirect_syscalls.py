@@ -27,16 +27,21 @@ def generate_indirect_syscalls() -> Dict[str, Any]:
 // ensuring the syscall instruction executes from within ntdll's .text section.
 
 #include <windows.h>
-#include <winternl.h>
-
-// Populated by find_syscall_gadget()
-static LPVOID g_syscall_gadget = NULL;
 
 // Syscall service numbers (resolved at runtime)
+#ifndef PHANTOM_SSN_VARS_DEFINED
+#define PHANTOM_SSN_VARS_DEFINED
 static DWORD ssn_NtAllocateVirtualMemory = 0;
 static DWORD ssn_NtWriteVirtualMemory    = 0;
 static DWORD ssn_NtProtectVirtualMemory  = 0;
 static DWORD ssn_NtCreateThreadEx        = 0;
+#endif /* PHANTOM_SSN_VARS_DEFINED */
+
+#ifndef PHANTOM_INDIRECT_SYSCALLS_INCLUDED
+#define PHANTOM_INDIRECT_SYSCALLS_INCLUDED
+
+// Populated by find_syscall_gadget()
+static LPVOID g_syscall_gadget = NULL;
 
 /**
  * Scan ntdll.dll for the first "syscall; ret" byte sequence (0F 05 C3).
@@ -116,6 +121,8 @@ NTSTATUS IndirectNtCreateThreadEx(
 
 // Call this once before using indirect syscalls:
 //   g_syscall_gadget = find_syscall_gadget();
+
+#endif /* PHANTOM_INDIRECT_SYSCALLS_INCLUDED */
 """
 
     return {

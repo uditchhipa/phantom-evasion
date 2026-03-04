@@ -31,6 +31,9 @@ def generate_thread_hijack() -> Dict[str, Any]:
 // Layer 4 – Behavioral Evasion
 // Redirects RIP of a live thread to shellcode without creating a new thread.
 
+#ifndef PHANTOM_THREAD_HIJACK_INCLUDED
+#define PHANTOM_THREAD_HIJACK_INCLUDED
+
 #include <windows.h>
 #include <tlhelp32.h>
 #include <stdio.h>
@@ -151,6 +154,8 @@ static BOOL thread_hijack_inject(DWORD pid,
     CloseHandle(hProcess);
     return TRUE;
 }
+
+#endif /* PHANTOM_THREAD_HIJACK_INCLUDED */
 """
 
     return {

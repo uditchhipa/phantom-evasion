@@ -59,8 +59,10 @@ def generate_api_hashing() -> Dict[str, Any]:
 // Pre-computed hashes for common APIs (ROR-13):
 {hash_comments}
 
+#ifndef PHANTOM_API_HASHING_INCLUDED
+#define PHANTOM_API_HASHING_INCLUDED
+
 #include <windows.h>
-#include <winternl.h>
 
 // Portable CONTAINING_RECORD definition for environments where the DDK macro
 // may not be available (e.g. MinGW without full DDK headers).
@@ -123,6 +125,8 @@ static FARPROC resolve_api(DWORD target_hash) {{
 
 // Example usage:
 //   FARPROC pVirtualAllocEx = resolve_api(0x{ror13("VirtualAllocEx"):08X}UL);
+
+#endif /* PHANTOM_API_HASHING_INCLUDED */
 """
 
     return {
