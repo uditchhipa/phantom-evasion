@@ -4,5 +4,7 @@ __pycache__/
 output/*.exe
 output/*.dll
 output/*.bin
+output/*.c
 output/detection_report_*.md
+root/
 

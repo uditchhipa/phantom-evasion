@@ -12,7 +12,7 @@ phantom_evasion:
 
   output_dir: output/
 
-  techniques:
+  technique_catalog:
     encryption: [xor, aes, rc4, chacha20]
     obfuscation: [string_obfuscate, junk_code, polymorphic, control_flow_flatten]
     edr_bypass: [direct_syscalls, indirect_syscalls, unhook_ntdll, api_hashing, hells_gate]

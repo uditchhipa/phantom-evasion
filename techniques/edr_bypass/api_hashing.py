@@ -62,6 +62,13 @@ def generate_api_hashing() -> Dict[str, Any]:
 #include <windows.h>
 #include <winternl.h>
 
+// Portable CONTAINING_RECORD definition for environments where the DDK macro
+// may not be available (e.g. MinGW without full DDK headers).
+#ifndef CONTAINING_RECORD
+#define CONTAINING_RECORD(address, type, field) \
+    ((type *)((PCHAR)(address) - (ULONG_PTR)(&((type *)0)->field)))
+#endif
+
 #define ROR13_MASK 0xFFFFFFFFUL
 
 static DWORD ror13_hash(const char *name) {{

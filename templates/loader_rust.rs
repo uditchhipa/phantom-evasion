@@ -7,7 +7,9 @@
  * Users MUST have explicit written permission from the target system owner.
  * Unauthorized use violates computer crime laws and is strictly prohibited.
  *
- * Requires: windows-sys = "0.52" in Cargo.toml
+ * Dependencies: see templates/Cargo.toml for the required [dependencies] block.
+ * Copy loader_rust.rs to src/main.rs inside a Cargo project initialized with
+ * that Cargo.toml before building with: cargo build --release --target x86_64-pc-windows-gnu
  */
 
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]

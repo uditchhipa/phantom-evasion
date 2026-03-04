@@ -147,7 +147,7 @@ class Compiler:
 
             env = os.environ.copy()
             env.update({"GOOS": "windows", "GOARCH": "amd64", "CGO_ENABLED": "0"})
-            cmd = [compiler_bin, "build", "-ldflags=-s -w", "-o", output_path, src_file]
+            cmd = [compiler_bin, "build", "-ldflags", "-s -w", "-o", output_path, src_file]
             self._run(cmd, env=env)
 
         return True

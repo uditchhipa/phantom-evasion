@@ -201,9 +201,9 @@ def run_pipeline(
     console.print()
 
     # Build pipeline config: start with yaml defaults, then apply CLI overrides.
-    # Exclude "techniques" from the yaml config (it's a dict of lists keyed by
-    # category) to avoid conflicting with the CLI "techniques" tuple of names.
-    pipeline_config = {k: v for k, v in config.items() if k != "techniques"}
+    # "technique_catalog" in the yaml config is a dict of lists keyed by category;
+    # "techniques" here is the CLI-supplied list of extra technique names.
+    pipeline_config = dict(config)
     pipeline_config.update({
         "encryption": encryption,
         "edr_bypass": edr_bypass,

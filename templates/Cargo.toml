@@ -1,0 +1,27 @@
+# Phantom Evasion – Rust Loader Cargo.toml Template
+#
+# LEGAL DISCLAIMER:
+# This template is part of the Phantom Evasion security research tool.
+# For AUTHORIZED penetration testing and security research ONLY.
+# Users MUST have explicit written permission from the target system owner.
+# Unauthorized use violates computer crime laws and is strictly prohibited.
+
+[package]
+name = "phantom-loader"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+windows-sys = { version = "0.52", features = [
+    "Win32_Foundation",
+    "Win32_System_Memory",
+    "Win32_System_Threading",
+    "Win32_System_Diagnostics_Debug",
+] }
+
+[profile.release]
+opt-level = "z"   # Optimize for size
+lto = true
+codegen-units = 1
+panic = "abort"
+strip = true
