@@ -31,6 +31,9 @@ def generate_classic_injection() -> Dict[str, Any]:
 #include <windows.h>
 #include <stdio.h>
 
+#ifndef __PHANTOM_CLASSIC_INJ_DEFINED__
+#define __PHANTOM_CLASSIC_INJ_DEFINED__
+
 static BOOL classic_inject(DWORD pid,
                             unsigned char *shellcode,
                             size_t shellcode_len) {
@@ -78,6 +81,8 @@ static BOOL classic_inject(DWORD pid,
     CloseHandle(hProcess);
     return TRUE;
 }
+
+#endif /* __PHANTOM_CLASSIC_INJ_DEFINED__ */
 """
 
     return {

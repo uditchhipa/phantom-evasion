@@ -60,7 +60,6 @@ def generate_api_hashing() -> Dict[str, Any]:
 {hash_comments}
 
 #include <windows.h>
-#include <winternl.h>
 
 // Portable CONTAINING_RECORD definition for environments where the DDK macro
 // may not be available (e.g. MinGW without full DDK headers).
@@ -68,6 +67,9 @@ def generate_api_hashing() -> Dict[str, Any]:
 #define CONTAINING_RECORD(address, type, field) \
     ((type *)((PCHAR)(address) - (ULONG_PTR)(&((type *)0)->field)))
 #endif
+
+#ifndef __PHANTOM_API_HASHING_DEFINED__
+#define __PHANTOM_API_HASHING_DEFINED__
 
 #define ROR13_MASK 0xFFFFFFFFUL
 
@@ -123,6 +125,8 @@ static FARPROC resolve_api(DWORD target_hash) {{
 
 // Example usage:
 //   FARPROC pVirtualAllocEx = resolve_api(0x{ror13("VirtualAllocEx"):08X}UL);
+
+#endif /* __PHANTOM_API_HASHING_DEFINED__ */
 """
 
     return {
