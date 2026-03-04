@@ -78,7 +78,7 @@ def load_config() -> dict:
     """Load configuration from config.yaml."""
     config_path = Path(__file__).parent / "config.yaml"
     if config_path.exists():
-        with open(config_path) as f:
+        with open(config_path, encoding="utf-8") as f:
             return yaml.safe_load(f).get("phantom_evasion", {})
     return {}
 
@@ -332,7 +332,7 @@ def run_pipeline(
 def _write_source(template_path: str, out_path: str, obfuscated: dict) -> None:
     """Write the filled C source template to disk (fallback when compiler absent)."""
     try:
-        with open(template_path) as f:
+        with open(template_path, encoding="utf-8") as f:
             source = f.read()
     except FileNotFoundError:
         source = "/* Template not found */\n"
@@ -351,7 +351,7 @@ def _write_source(template_path: str, out_path: str, obfuscated: dict) -> None:
     for placeholder, replacement in replacements.items():
         source = source.replace(placeholder, replacement)
 
-    with open(out_path, "w") as f:
+    with open(out_path, "w", encoding="utf-8") as f:
         f.write(source)
 
 

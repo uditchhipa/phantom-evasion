@@ -53,13 +53,13 @@ class Compiler:
         Raises:
             RuntimeError: If the compiler exits with a non-zero status.
         """
-        compiler_bin = self._find_tool("x86_64-w64-mingw32-gcc")
+        compiler_bin = self._find_c_compiler()
         if compiler_bin is None:
             return False
 
         source = self._fill_c_template(template, obfuscated_code)
 
-        with tempfile.NamedTemporaryFile(suffix=".c", delete=False, mode="w") as tmp:
+        with tempfile.NamedTemporaryFile(suffix=".c", delete=False, mode="w", encoding="utf-8") as tmp:
             tmp.write(source)
             tmp_path = tmp.name
 
@@ -96,7 +96,7 @@ class Compiler:
 
         source = self._fill_rust_template(template, obfuscated_code)
 
-        with tempfile.NamedTemporaryFile(suffix=".rs", delete=False, mode="w") as tmp:
+        with tempfile.NamedTemporaryFile(suffix=".rs", delete=False, mode="w", encoding="utf-8") as tmp:
             tmp.write(source)
             tmp_path = tmp.name
 
@@ -142,7 +142,7 @@ class Compiler:
 
         with tempfile.TemporaryDirectory() as tmp_dir:
             src_file = os.path.join(tmp_dir, "main.go")
-            with open(src_file, "w") as f:
+            with open(src_file, "w", encoding="utf-8") as f:
                 f.write(source)
 
             env = os.environ.copy()
@@ -204,7 +204,7 @@ class Compiler:
     def _read_template(template_path: str) -> str:
         """Return the contents of *template_path*, or a minimal stub on error."""
         try:
-            with open(template_path) as f:
+            with open(template_path, encoding="utf-8") as f:
                 return f.read()
         except FileNotFoundError:
             return "/* Template file not found */\n"
@@ -213,6 +213,20 @@ class Compiler:
     def _find_tool(name: str) -> Optional[str]:
         """Return the full path to *name* if it exists on PATH, else None."""
         return shutil.which(name)
+
+    @staticmethod
+    def _find_c_compiler() -> Optional[str]:
+        """Try multiple C compiler names, returning the first one found on PATH."""
+        candidates = [
+            "x86_64-w64-mingw32-gcc",  # Linux cross-compiler
+            "gcc",                      # Windows MinGW / MSYS2
+            "cc",                       # Generic Unix
+        ]
+        for name in candidates:
+            path = shutil.which(name)
+            if path is not None:
+                return path
+        return None
 
     @staticmethod
     def _run(cmd: list, env: Optional[dict] = None) -> None:
