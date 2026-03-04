@@ -200,14 +200,17 @@ def run_pipeline(
     console.print(Panel("[bold cyan]Starting Phantom Evasion Pipeline[/bold cyan]", expand=False))
     console.print()
 
-    pipeline_config = {
+    # Build pipeline config: start with yaml defaults, then apply CLI overrides.
+    # Exclude "techniques" from the yaml config (it's a dict of lists keyed by
+    # category) to avoid conflicting with the CLI "techniques" tuple of names.
+    pipeline_config = {k: v for k, v in config.items() if k != "techniques"}
+    pipeline_config.update({
         "encryption": encryption,
         "edr_bypass": edr_bypass,
-        "techniques": techniques,
+        "techniques": list(techniques),   # CLI-supplied extra technique names
         "loader": loader,
         "output_format": output_format,
-        **config,
-    }
+    })
 
     # Ensure output directory exists
     Path(output_file).parent.mkdir(parents=True, exist_ok=True)

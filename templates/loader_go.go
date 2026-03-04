@@ -97,9 +97,11 @@ func main() {
 		0x90, // NOP placeholder
 	}
 
-	// TODO: resolve target PID dynamically
+	// TODO: resolve target PID dynamically (e.g. via process enumeration).
+	// Replace 0 with the desired target process ID before compiling.
 	targetPID := uint32(0)
 	if targetPID == 0 {
+		// No target PID configured – exit cleanly.
 		return
 	}
 

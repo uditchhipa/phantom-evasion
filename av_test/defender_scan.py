@@ -36,7 +36,8 @@ def _parse_defender_output(output: str) -> Dict[str, Any]:
     """Extract detection status and threat name from MpCmdRun output."""
     output_lower = output.lower()
 
-    if "no threats" in output_lower or "scan finished" in output_lower and "threat" not in output_lower:
+    if ("no threats" in output_lower or
+            ("scan finished" in output_lower and "threat" not in output_lower)):
         return {
             "detected": False,
             "threat_name": "",
