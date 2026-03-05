@@ -103,6 +103,8 @@ def print_step(step: str, status: str = "✓", style: str = "green") -> None:
 @click.option("--format", "output_format", default="exe",
               type=click.Choice(["exe", "dll", "bin"], case_sensitive=False),
               help="Output format (default: exe)")
+@click.option("--lhost", default="127.0.0.1", help="Listener IP for network-based payloads")
+@click.option("--lport", default=4444, type=int, help="Listener Port for network-based payloads")
 @click.option("--edr-bypass", "edr_bypass",
               type=click.Choice(["none", "basic", "full"], case_sensitive=False),
               default="full", help="EDR bypass level (default: full)")
@@ -126,6 +128,8 @@ def cli(
     input_file: Optional[str],
     output_file: str,
     output_format: str,
+    lhost: str,
+    lport: int,
     edr_bypass: str,
     techniques: tuple,
     encryption: str,
@@ -143,7 +147,7 @@ def cli(
 
     \b
     Example:
-        python main.py -i shellcode.bin -o output/payload --encryption aes --edr-bypass full
+        python main.py -i shellcode.bin -o output/payload --encryption aes --edr-bypass full --lhost 192.168.0.3
     """
     print_banner()
 
@@ -162,6 +166,8 @@ def cli(
         input_file=input_file,
         output_file=output_file,
         output_format=output_format,
+        lhost=lhost,
+        lport=lport,
         edr_bypass=edr_bypass,
         techniques=list(techniques),
         encryption=encryption,
@@ -199,6 +205,8 @@ def run_pipeline(
     input_file: str,
     output_file: str,
     output_format: str,
+    lhost: str,
+    lport: int,
     edr_bypass: str,
     techniques: list,
     encryption: str,
@@ -212,15 +220,15 @@ def run_pipeline(
     console.print()
 
     # Build pipeline config: start with yaml defaults, then apply CLI overrides.
-    # "technique_catalog" in the yaml config is a dict of lists keyed by category;
-    # "techniques" here is the CLI-supplied list of extra technique names.
     pipeline_config = dict(config)
     pipeline_config.update({
         "encryption": encryption,
         "edr_bypass": edr_bypass,
-        "techniques": list(techniques),   # CLI-supplied extra technique names
+        "techniques": list(techniques),
         "loader": loader,
         "output_format": output_format,
+        "lhost": lhost,
+        "lport": lport,
     })
 
     # Ensure output directory exists
