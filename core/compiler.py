@@ -25,8 +25,10 @@ class Compiler:
         "-static",
         "-lntdll",
         "-lbcrypt",
-        "-lkernel32",
+        "-ladvapi32",
         "-luser32",
+        "-lkernel32",
+        "-lshlwapi",
     ]
 
     # ------------------------------------------------------------------
