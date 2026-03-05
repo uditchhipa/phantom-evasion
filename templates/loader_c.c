@@ -12,14 +12,33 @@
 
 /* winternl.h is not available on all MinGW installations.
  * Define the subset of types we need inline. */
-#ifndef _WINTERNL_H_
-#define _WINTERNL_H_
+#ifndef _PHANTOM_TYPES_H_
+#define _PHANTOM_TYPES_H_
 
+#ifndef _WINTERNL_H_
+#ifndef _LSA_UNICODE_STRING_DEFINED
+#ifndef _NTDEF_
 typedef struct _UNICODE_STRING {
     USHORT Length;
     USHORT MaximumLength;
     PWSTR  Buffer;
 } UNICODE_STRING, *PUNICODE_STRING;
+#define _LSA_UNICODE_STRING_DEFINED
+#define _NTDEF_
+#endif
+#endif
+#endif
+
+#ifndef _ANSI_STRING_DEFINED
+typedef struct _STRING {
+    USHORT Length;
+    USHORT MaximumLength;
+    PCHAR  Buffer;
+} STRING, *PSTRING;
+typedef STRING ANSI_STRING;
+typedef PSTRING PANSI_STRING;
+#define _ANSI_STRING_DEFINED
+#endif
 
 typedef struct _PEB_LDR_DATA {
     BYTE       Reserved1[8];
@@ -85,7 +104,7 @@ typedef LONG NTSTATUS;
 #define ProcessDebugPort 7
 #endif
 
-#endif /* _WINTERNL_H_ */
+#endif /* _PHANTOM_TYPES_H_ */
 
 #include <bcrypt.h>
 #include <stdio.h>
@@ -114,6 +133,8 @@ typedef LONG NTSTATUS;
 
 /* PLACEHOLDER: evasion_techniques */
 
+/* PLACEHOLDER: injection_method */
+
 /* ═══════════════════════════════════════════════════════════════════════════
  * ENTRY POINT
  * ═══════════════════════════════════════════════════════════════════════════ */
@@ -123,7 +144,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     (void)hInstance; (void)hPrevInstance;
     (void)lpCmdLine; (void)nShowCmd;
 
-    /* PLACEHOLDER: injection_method */
+    /* PLACEHOLDER: main_logic */
 
     return 0;
 }

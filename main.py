@@ -347,6 +347,7 @@ def _write_source(template_path: str, out_path: str, obfuscated: dict) -> None:
             obfuscated.get("behavioral_code", ""),
         ]),
         "/* PLACEHOLDER: injection_method */": obfuscated.get("injection_code", ""),
+        "/* PLACEHOLDER: main_logic */": obfuscated.get("main_logic", ""),
     }
     for placeholder, replacement in replacements.items():
         source = source.replace(placeholder, replacement)

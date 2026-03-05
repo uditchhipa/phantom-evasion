@@ -54,8 +54,8 @@ NTSTATUS DirectNtAllocateVirtualMemory(
         ULONG_PTR ZeroBits, PSIZE_T RegionSize,
         ULONG AllocationType, ULONG Protect) {
     __asm__ volatile (
-        "mov eax, %0\n\t"
-        "mov r10, rcx\n\t"
+        "movl %0, %%eax\n\t"
+        "movq %%rcx, %%r10\n\t"
         "syscall\n\t"
         "ret\n\t"
         :
@@ -71,8 +71,8 @@ NTSTATUS DirectNtWriteVirtualMemory(
         PVOID Buffer, SIZE_T NumberOfBytesToWrite,
         PSIZE_T NumberOfBytesWritten) {
     __asm__ volatile (
-        "mov eax, %0\n\t"
-        "mov r10, rcx\n\t"
+        "movl %0, %%eax\n\t"
+        "movq %%rcx, %%r10\n\t"
         "syscall\n\t"
         "ret\n\t"
         :
@@ -88,8 +88,8 @@ NTSTATUS DirectNtProtectVirtualMemory(
         PSIZE_T RegionSize, ULONG NewProtect,
         PULONG OldProtect) {
     __asm__ volatile (
-        "mov eax, %0\n\t"
-        "mov r10, rcx\n\t"
+        "movl %0, %%eax\n\t"
+        "movq %%rcx, %%r10\n\t"
         "syscall\n\t"
         "ret\n\t"
         :
@@ -108,8 +108,8 @@ NTSTATUS DirectNtCreateThreadEx(
         SIZE_T StackSize, SIZE_T MaximumStackSize,
         PVOID AttributeList) {
     __asm__ volatile (
-        "mov eax, %0\n\t"
-        "mov r10, rcx\n\t"
+        "movl %0, %%eax\n\t"
+        "movq %%rcx, %%r10\n\t"
         "syscall\n\t"
         "ret\n\t"
         :

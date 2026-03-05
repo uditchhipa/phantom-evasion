@@ -169,6 +169,7 @@ class Compiler:
                 code.get("behavioral_code", ""),
             ])),
             "/* PLACEHOLDER: injection_method */": code.get("injection_code", ""),
+            "/* PLACEHOLDER: main_logic */": code.get("main_logic", ""),
         }
         for placeholder, replacement in substitutions.items():
             source = source.replace(placeholder, replacement)
