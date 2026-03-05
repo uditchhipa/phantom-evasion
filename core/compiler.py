@@ -29,6 +29,8 @@ class Compiler:
         "-luser32",
         "-lkernel32",
         "-lshlwapi",
+        "-lws2_32",
+        "-lwininet",
     ]
 
     # ------------------------------------------------------------------
@@ -66,10 +68,13 @@ class Compiler:
             tmp_path = tmp.name
 
         try:
+            # Final Compilation command
             cmd = [compiler_bin, tmp_path, "-o", output_path] + self._C_FLAGS
             self._run(cmd)
+
         finally:
-            os.unlink(tmp_path)
+            if os.path.exists(tmp_path):
+                os.unlink(tmp_path)
 
         return True
 
